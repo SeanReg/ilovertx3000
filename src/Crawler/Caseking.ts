@@ -3,6 +3,7 @@ import cheerio from 'cheerio';
 import {Product} from '../Model/Product';
 import {Logger} from '../Logger';
 import axios from 'axios';
+import { Region } from '../Model/RegionSpec';
 
 export class Caseking implements CrawlerInterface {
   private products: Product[] = [
@@ -64,6 +65,8 @@ export class Caseking implements CrawlerInterface {
       url: 'https://www.caseking.de/asus-geforce-rtx-3080-tuf-gaming-o10g-10240-mb-gddr6x-gcas-396.html'
     },
   ];
+
+  region: Region = Region.DE
 
   getRetailerName(): string {
     return 'Caseking';

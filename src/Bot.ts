@@ -2,6 +2,7 @@ import {CrawlerInterface} from './Crawler/CrawlerInterface';
 import {Product} from './Model/Product';
 import {Logger} from './Logger';
 import {NotificationInterface} from './Notification/NotificationInterface';
+import { Region } from './Model/RegionSpec';
 
 export class Bot {
   private stock: Product[] = [];
@@ -33,7 +34,7 @@ export class Bot {
             return;
           }
           if (product.stock !== existing.stock) {
-            this.handleStockChange(product, existing);
+            this.handleStockChange(crawler, product, existing);
             existing.stock = product.stock;
           }
         });
@@ -42,9 +43,11 @@ export class Bot {
     }
   }
 
-  private handleStockChange(product: Product, previous: Product) {
+  private handleStockChange(crawler: CrawlerInterface, product: Product, previous: Product) {
     this.notifications.forEach(notification => {
-      notification.notify(`${product.retailer}: Stock changed from "${previous.stock}" to "${product.stock}". ${product.url}`, this.logger);
+      if ((crawler.region == Region.ALL || notification.region == Region.ALL) || notification.region == crawler.region) {
+        notification.notify(`${product.retailer}: Stock changed from "${previous.stock}" to "${product.stock}". ${product.url}`, this.logger);
+      }
     });
   }
 

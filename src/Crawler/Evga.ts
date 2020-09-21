@@ -3,6 +3,7 @@ import cheerio from 'cheerio';
 import {Product} from '../Model/Product';
 import {Logger} from '../Logger';
 import axios from 'axios';
+import { Region } from '../Model/RegionSpec';
 
 export class Evga implements CrawlerInterface {
   private products: Product[] = [
@@ -23,6 +24,8 @@ export class Evga implements CrawlerInterface {
       url: 'https://www.evga.com/products/product.aspx?pn=10G-P5-3885-KR'
     },
   ];
+
+  region: Region = Region.ALL
 
   getRetailerName(): string {
     return 'EVGA Shop';

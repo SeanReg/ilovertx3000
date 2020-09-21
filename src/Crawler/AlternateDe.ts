@@ -3,6 +3,7 @@ import cheerio from 'cheerio';
 import axios from 'axios';
 import {Product} from '../Model/Product';
 import {Logger} from '../Logger';
+import { Region } from '../Model/RegionSpec';
 
 export class AlternateDe implements CrawlerInterface {
   private products: Product[] = [
@@ -31,6 +32,8 @@ export class AlternateDe implements CrawlerInterface {
       url: 'https://www.alternate.de/ASUS/GeForce-RTX-3080-ROG-STRIX-OC-GAMING-Grafikkarte/html/product/1672867?'
     },
   ];
+
+  region: Region = Region.DE
 
   getRetailerName(): string {
     return 'alternate.de';

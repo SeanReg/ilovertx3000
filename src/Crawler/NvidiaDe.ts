@@ -3,6 +3,7 @@ import cheerio from 'cheerio';
 import {Product} from '../Model/Product';
 import {Logger} from '../Logger';
 import axios from 'axios';
+import { Region } from '../Model/RegionSpec';
 
 export class NvidiaDe implements CrawlerInterface {
   private products: Product[] = [
@@ -11,6 +12,8 @@ export class NvidiaDe implements CrawlerInterface {
       url: 'https://www.nvidia.com/de-de/geforce/graphics-cards/30-series/rtx-3080/'
     },
   ];
+
+  region: Region = Region.DE
 
   getRetailerName(): string {
     return 'nVidia Shop DE';

@@ -22,33 +22,34 @@ export class Bot {
       return;
     }
 
-    // noinspection InfiniteLoopJS
-    while (true) {
-      for await (const crawler of this.crawler) {
-        const stock = await crawler.acquireStock(this.logger);
-        stock.forEach(product => {
-          const existing = this.stock.find(p => p.retailer === product.retailer && p.name === product.name);
-          if (!existing) {
-            this.stock.push({...product});
-            return;
-          }
-          if (product.stock !== existing.stock) {
-            this.handleStockChange(product, existing);
-            existing.stock = product.stock;
-          }
-        });
-      }
-      await this.sleep(this.delay);
+    for (const crawler of this.crawler) {
+      this.runCrawler(crawler)
     }
+  }
+
+  private runCrawler(crawler: CrawlerInterface) {
+    this.logger.info(`Starting crawler ${crawler.getRetailerName()}`)
+    crawler.acquireStock(this.logger).then(stock => {
+      stock.forEach(product => {
+        const existing = this.stock.find(p => p.retailer === product.retailer && p.name === product.name);
+        if (!existing) {
+          this.stock.push({...product});
+          return;
+        }
+        if (product.stock !== existing.stock) {
+          this.handleStockChange(product, existing);
+          existing.stock = product.stock;
+        }
+      });
+    }).finally(() => {
+      //Resechdule for later
+      setTimeout(() => this.runCrawler(crawler), this.delay)
+    })
   }
 
   private handleStockChange(product: Product, previous: Product) {
     this.notifications.forEach(notification => {
       notification.notify(`${product.retailer}: Stock changed from "${previous.stock}" to "${product.stock}". ${product.url}`, this.logger);
     });
-  }
-
-  private async sleep(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
   }
 }
